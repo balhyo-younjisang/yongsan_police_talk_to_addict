@@ -26,13 +26,6 @@ export default function Chat() {
     isOnline: true
   };
 
-  // Create current user
-  const currentUser: ChatUser = {
-    id: "user",
-    name: "사용자",
-    isOnline: true
-  };
-
   // Auto-scroll to bottom
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });

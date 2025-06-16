@@ -22,7 +22,7 @@ export function loadChatHistory(scenarioId: string): ChatMessage[] {
     
     if (!storedData) return [];
 
-    const messages = JSON.parse(storedData).map((msg: any) => ({
+    const messages = JSON.parse(storedData).map((msg: ChatMessage) => ({
       ...msg,
       timestamp: new Date(msg.timestamp) // Convert string back to Date
     }));
