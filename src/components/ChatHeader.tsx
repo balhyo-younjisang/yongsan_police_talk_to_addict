@@ -3,9 +3,10 @@ import Link from "next/link";
 
 interface ChatHeaderProps {
   addictUser: ChatUser;
+  onClearHistory: () => void;
 }
 
-export default function ChatHeader({ addictUser }: ChatHeaderProps) {
+export default function ChatHeader({ addictUser, onClearHistory }: ChatHeaderProps) {
   return (
     <div className="bg-gray-800/50 backdrop-blur-sm border-b border-gray-700 p-4 flex items-center justify-between">
       <div className="flex items-center space-x-4">
@@ -34,6 +35,13 @@ export default function ChatHeader({ addictUser }: ChatHeaderProps) {
           ← 목록으로
         </button>
       </Link>
+
+      <button
+        onClick={onClearHistory}
+        className="px-3 py-1 text-sm text-gray-400 hover:text-white bg-gray-700 hover:bg-gray-600 rounded-md transition-colors"
+      >
+        대화 내용 지우기
+      </button>
     </div>
   );
 } 

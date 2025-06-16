@@ -3,7 +3,8 @@
 import { useState, useEffect, useRef } from "react";
 import { useParams } from "next/navigation";
 import { ChatMessage, ChatUser } from "@/types/chat";
-import { getScenarioById, generateAddictResponse, createInitialMessage } from "@/utils/chatHelpers";
+import { getScenarioById, createInitialMessage, generateChatGPTResponse } from "@/utils/chatHelpers";
+import { saveChatHistory, loadChatHistory, clearChatHistory } from "@/utils/storageHelpers";
 import ChatHeader from "@/components/ChatHeader";
 import MessageBubble from "@/components/MessageBubble";
 import TypingIndicator from "@/components/TypingIndicator";
@@ -41,18 +42,31 @@ export default function Chat() {
     scrollToBottom();
   }, [messages, isTyping]);
 
-  // Initialize chat with addict's first message
+  // Load chat history on mount
   useEffect(() => {
-    if (scenario && messages.length === 0) {
-      const initialMessage: ChatMessage = {
-        id: "initial",
-        content: createInitialMessage(scenario),
-        sender: "addict",
-        timestamp: new Date()
-      };
-      setMessages([initialMessage]);
+    if (scenario) {
+      const savedMessages = loadChatHistory(scenarioId);
+      if (savedMessages.length > 0) {
+        setMessages(savedMessages);
+      } else {
+        // Initialize with addict's first message if no history exists
+        const initialMessage: ChatMessage = {
+          id: "initial",
+          content: createInitialMessage(scenario),
+          sender: "addict",
+          timestamp: new Date()
+        };
+        setMessages([initialMessage]);
+      }
     }
-  }, [scenario, messages.length]);
+  }, [scenario, scenarioId]);
+
+  // Save chat history whenever messages change
+  useEffect(() => {
+    if (scenario && messages.length > 0) {
+      saveChatHistory(scenarioId, messages);
+    }
+  }, [messages, scenario, scenarioId]);
 
   // Handle sending message
   const handleSendMessage = async (content: string) => {
@@ -71,20 +85,46 @@ export default function Chat() {
     // Show typing indicator
     setIsTyping(true);
 
-    // Simulate typing delay
-    setTimeout(() => {
-      setIsTyping(false);
+    try {
+      // Generate addict response using ChatGPT
+      const responseContent = await generateChatGPTResponse(content, scenario, messages);
       
-      // Generate addict response
       const addictResponse: ChatMessage = {
         id: (Date.now() + 1).toString(),
-        content: generateAddictResponse(content, scenario),
+        content: responseContent,
         sender: "addict",
         timestamp: new Date()
       };
 
       setMessages(prev => [...prev, addictResponse]);
-    }, 1500 + Math.random() * 2000); // Random delay between 1.5-3.5 seconds
+    } catch (error) {
+      console.error("Error generating response:", error);
+      // Add error message
+      const errorMessage: ChatMessage = {
+        id: (Date.now() + 1).toString(),
+        content: "죄송합니다. 응답을 생성하는데 문제가 발생했습니다.",
+        sender: "addict",
+        timestamp: new Date()
+      };
+      setMessages(prev => [...prev, errorMessage]);
+    } finally {
+      setIsTyping(false);
+    }
+  };
+
+  // Handle clearing chat history
+  const handleClearHistory = () => {
+    if (window.confirm("대화 내용을 모두 지우시겠습니까?")) {
+      clearChatHistory(scenarioId);
+      // Initialize with addict's first message
+      const initialMessage: ChatMessage = {
+        id: "initial",
+        content: createInitialMessage(scenario!),
+        sender: "addict",
+        timestamp: new Date()
+      };
+      setMessages([initialMessage]);
+    }
   };
 
   if (!scenario) {
@@ -101,7 +141,10 @@ export default function Chat() {
   return (
     <div className="flex flex-col h-screen bg-gradient-to-br from-gray-900 via-black to-gray-800">
       {/* Chat Header */}
-      <ChatHeader addictUser={addictUser} />
+      <ChatHeader 
+        addictUser={addictUser} 
+        onClearHistory={handleClearHistory}
+      />
 
       {/* Messages Area */}
       <div className="flex-1 overflow-y-auto p-4 space-y-4">

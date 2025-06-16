@@ -1,5 +1,6 @@
 import { AddictionScenario } from "@/types/addiction";
 import { scenarios } from "@/data/scenarios";
+import { ChatMessage } from "@/types/chat";
 
 export const getScenarioById = (id: string): AddictionScenario | undefined => {
   return scenarios.find(scenario => scenario.id === id);
@@ -70,4 +71,34 @@ export const createInitialMessage = (scenario: AddictionScenario): string => {
 
   return initialMessages[scenario.id as keyof typeof initialMessages] || 
     "안녕... 나는 중독자야. 도움이 필요해.";
-}; 
+};
+
+export async function generateChatGPTResponse(
+  userMessage: string,
+  scenario: AddictionScenario,
+  messageHistory: ChatMessage[]
+): Promise<string> {
+  try {
+    const response = await fetch("/api/chat", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        message: userMessage,
+        scenario: scenario,
+        messageHistory: messageHistory,
+      }),
+    });
+
+    if (!response.ok) {
+      throw new Error("Failed to generate response");
+    }
+
+    const data = await response.json();
+    return data.message;
+  } catch (error) {
+    console.error("Error generating ChatGPT response:", error);
+    return "죄송합니다. 응답을 생성하는데 문제가 발생했습니다.";
+  }
+} 

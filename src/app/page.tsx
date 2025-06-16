@@ -7,7 +7,7 @@ export default function Home() {
         {/* Title with dramatic styling */}
         <div className="mb-8">
           <h1 className="text-6xl md:text-8xl font-black text-transparent bg-clip-text bg-gradient-to-r from-red-500 via-red-600 to-red-700 mb-4 tracking-wider">
-            TALKTO
+            TALK TO..
           </h1>
           <div className="w-32 h-1 bg-gradient-to-r from-red-500 to-red-700 mx-auto mb-4"></div>
         </div>

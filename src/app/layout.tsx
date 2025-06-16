@@ -23,7 +23,7 @@ export default function RootLayout({
         className={`${pretendard.className} antialiased`}
       >
 
-    <div className="min-h-screen bg-gradient-to-br from-gray-900 via-black to-gray-800 flex flex-col items-center justify-center p-8 relative overflow-hidden">
+    <div className="min-h-screen bg-gradient-to-br from-gray-900 via-black to-gray-800 flex flex-col items-center justify-center relative overflow-hidden">
       {/* Background effects */}
       <div className="absolute inset-0 bg-black opacity-50"></div>
       <div className="absolute top-0 left-0 w-full h-full bg-gradient-to-b from-red-900/20 via-transparent to-blue-900/20"></div>
