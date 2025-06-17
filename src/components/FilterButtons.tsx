@@ -1,7 +1,4 @@
 import { FilterType } from "@/types/addiction";
-import { getFilterButtonClass } from "@/utils/styles";
-import { getScenarioCount } from "@/utils/filters";
-import { scenarios } from "@/data/scenarios";
 
 interface FilterButtonsProps {
   selectedType: FilterType;
@@ -9,24 +6,38 @@ interface FilterButtonsProps {
 }
 
 export default function FilterButtons({ selectedType, onTypeChange }: FilterButtonsProps) {
-  const filterOptions: { type: FilterType; label: string; icon: string }[] = [
-    { type: "all", label: "전체 보기", icon: "👥" },
-    { type: "drug", label: "마약 중독자", icon: "💊" },
-    { type: "gambling", label: "도박 중독자", icon: "🎰" }
-  ];
-
   return (
-    <div className="flex flex-wrap justify-center mb-8 gap-4">
-      {filterOptions.map(({ type, label, icon }) => (
-        <button
-          key={type}
-          onClick={() => onTypeChange(type)}
-          className={getFilterButtonClass(selectedType === type, type)}
-        >
-          <span>{icon}</span>
-          {label} ({getScenarioCount(scenarios, type)})
-        </button>
-      ))}
+    <div className="flex flex-wrap justify-center gap-2 sm:gap-3 mb-6 sm:mb-8">
+      <button
+        onClick={() => onTypeChange("all")}
+        className={`px-3 sm:px-4 py-2 text-xs sm:text-sm rounded-lg transition-all duration-300 ${
+          selectedType === "all"
+            ? "bg-blue-600 text-white"
+            : "bg-gray-700/50 text-gray-300 hover:bg-gray-600/50"
+        }`}
+      >
+        전체
+      </button>
+      <button
+        onClick={() => onTypeChange("drug")}
+        className={`px-3 sm:px-4 py-2 text-xs sm:text-sm rounded-lg transition-all duration-300 ${
+          selectedType === "drug"
+            ? "bg-red-600 text-white"
+            : "bg-gray-700/50 text-gray-300 hover:bg-gray-600/50"
+        }`}
+      >
+        마약 중독
+      </button>
+      <button
+        onClick={() => onTypeChange("gambling")}
+        className={`px-3 sm:px-4 py-2 text-xs sm:text-sm rounded-lg transition-all duration-300 ${
+          selectedType === "gambling"
+            ? "bg-yellow-600 text-white"
+            : "bg-gray-700/50 text-gray-300 hover:bg-gray-600/50"
+        }`}
+      >
+        도박 중독
+      </button>
     </div>
   );
 } 

@@ -8,40 +8,40 @@ interface ChatHeaderProps {
 
 export default function ChatHeader({ addictUser, onClearHistory }: ChatHeaderProps) {
   return (
-    <div className="bg-gray-800/50 backdrop-blur-sm border-b border-gray-700 p-4 flex items-center justify-between">
-      <div className="flex items-center space-x-4">
-        {/* Avatar */}
+    <div className="bg-gray-800/50 backdrop-blur-sm border-b border-gray-700 p-3 sm:p-4 flex items-center justify-between">
+      <div className="flex items-center space-x-2 sm:space-x-3">
         <div className="relative">
-          <div className="w-12 h-12 bg-gradient-to-br from-red-500 to-red-700 rounded-full flex items-center justify-center text-white font-bold text-lg">
-            {addictUser.name.charAt(0)}
+          <div className="w-8 h-8 sm:w-10 sm:h-10 rounded-full bg-gray-600 flex items-center justify-center">
+            <span className="text-white text-sm sm:text-lg font-semibold">
+              {addictUser.name[0]}
+            </span>
           </div>
-          <div className={`absolute -bottom-1 -right-1 w-4 h-4 rounded-full border-2 border-gray-800 ${
-            addictUser.isOnline ? 'bg-green-500' : 'bg-gray-500'
-          }`}></div>
+          {addictUser.isOnline && (
+            <div className="absolute bottom-0 right-0 w-2 h-2 sm:w-3 sm:h-3 bg-green-500 rounded-full border-2 border-gray-800" />
+          )}
         </div>
-        
-        {/* User Info */}
         <div>
-          <h2 className="text-white font-semibold text-lg">{addictUser.name}</h2>
-          <p className="text-gray-400 text-sm">
-            {addictUser.isOnline ? '🟢 온라인' : '🔴 오프라인'}
+          <h2 className="text-white font-semibold text-sm sm:text-base">{addictUser.name}</h2>
+          <p className="text-gray-400 text-xs sm:text-sm">
+            {addictUser.isOnline ? "온라인" : "오프라인"}
           </p>
         </div>
       </div>
-      
-      {/* Back Button */}
-      <Link href="/select">
-        <button className="px-4 py-2 bg-gray-700/50 hover:bg-gray-600/50 text-gray-300 rounded-lg transition-all duration-300 backdrop-blur-sm border border-gray-600">
-          ← 목록으로
-        </button>
-      </Link>
 
-      <button
-        onClick={onClearHistory}
-        className="px-3 py-1 text-sm text-gray-400 hover:text-white bg-gray-700 hover:bg-gray-600 rounded-md transition-colors"
-      >
-        대화 내용 지우기
-      </button>
+      <div className="flex items-center space-x-2 sm:space-x-3">
+        <Link href="/select">
+          <button className="px-2 sm:px-3 py-1 sm:py-2 text-xs sm:text-sm text-gray-400 hover:text-white bg-gray-700 hover:bg-gray-600 rounded-md transition-colors">
+            다른 대화
+          </button>
+        </Link>
+
+        <button
+          onClick={onClearHistory}
+          className="px-2 sm:px-3 py-1 sm:py-2 text-xs sm:text-sm text-gray-400 hover:text-white bg-gray-700 hover:bg-gray-600 rounded-md transition-colors"
+        >
+          대화 내용 지우기
+        </button>
+      </div>
     </div>
   );
 } 
